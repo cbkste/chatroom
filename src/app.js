@@ -94,7 +94,7 @@ function App() {
   function sendMessege(e) {
     e.preventDefault()
     firebase.addMessege({
-      chatroom: currentRoom ? currentRoom : 'quickboxChat',
+      chatroom: currentRoom,
       username: username || 'anonymous',
       content: e.target.elements.message.value,
     })
@@ -104,7 +104,7 @@ function App() {
 
   useEffect(
     () => {
-      const unsubscribe = firebase.subscribe(currentRoom ? currentRoom : 'quickboxChat',
+      const unsubscribe = firebase.subscribe(currentRoom,
         messeges => {
           setMesseges(messeges)
         },
