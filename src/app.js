@@ -83,6 +83,7 @@ function App() {
   const messegesContainerRef = useRef()
   const [messeges, setMesseges] = useState([])
   const [chatrooms, setChatrooms] = useState([])
+  const [currentRoom, setCurrentRoom] = useState('quickboxChat')
   const [username, setUsername] = useState(() =>
     window.localStorage.getItem('geo-chat:username'),
   )
@@ -93,6 +94,7 @@ function App() {
   function sendMessege(e) {
     e.preventDefault()
     firebase.addMessege({
+      chatroom: currentRoom ? currentRoom : 'quickboxChat',
       username: username || 'anonymous',
       content: e.target.elements.message.value,
     })
@@ -102,7 +104,7 @@ function App() {
 
   useEffect(
     () => {
-      const unsubscribe = firebase.subscribe(
+      const unsubscribe = firebase.subscribe(currentRoom ? currentRoom : 'quickboxChat',
         messeges => {
           setMesseges(messeges)
         },
@@ -110,7 +112,8 @@ function App() {
       return () => {
         unsubscribe()
       }
-    }
+    },
+    [currentRoom, setCurrentRoom]
   )
 
   // useEffect(
@@ -135,9 +138,15 @@ function App() {
     )
   }
 
+  function setRoom(e, room) {
+    e.preventDefault()
+    setCurrentRoom(room)
+  }
+
   return (
     <Fragment>
     <div>
+      <h3>Current Chatroom: { currentRoom }</h3>
       <label htmlFor="username">Username</label>
       <input
         type="text"
@@ -175,7 +184,7 @@ function App() {
     <div>
         <button onClick={allChatRooms} type="submit">Chatrooms</button>
         {chatrooms && chatrooms.map(roomms => (
-          <div key={roomms.key}>{roomms.room}</div>
+          <button onClick={ (event) => setRoom(event, roomms.room)} type='submit' key={roomms.key}>{roomms.room}</button>
         ))}
     </div>
     </Fragment>

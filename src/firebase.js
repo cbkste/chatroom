@@ -3,14 +3,14 @@ import 'firebase/database'
 
 try {
   firebase.initializeApp({
-  //firebase setup
+// setup
   })
 } catch (e) {}
 
-function addMessege({content,username,}) {
+function addMessege({chatroom,content,username}) {
   firebase
     .database()
-    .ref(`messeges/quickboxChat/posts`)
+    .ref(`messeges/${chatroom}/posts`)
     .push({
       date: Date.now(),
       content,
@@ -18,11 +18,11 @@ function addMessege({content,username,}) {
     })
 }
 
-function subscribe(callback) {
+function subscribe(chatroom, callback) {
   const ref = firebase
     .database()
-    .ref(`messeges/quickboxChat/posts`)
-  console.log('registering with locationid of quickbox Chat')
+    .ref(`messeges/${chatroom}/posts`)
+  console.log(`registering with locationid of ${chatroom} Chat`)
   ref.on('value', snapshot =>
     callback(
       Object.entries(snapshot.val() || {}).map(
